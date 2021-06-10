@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 3
+Sheet 1 4
 Title "T12 Soldering Station"
 Date "2021-05-16"
 Rev "20210516"
@@ -24,5 +24,11 @@ S 950  2000 1550 500
 U 60B20B39
 F0 "control" 50
 F1 "control.sch" 50
+$EndSheet
+$Sheet
+S 1050 2950 1450 500 
+U 60C0CD20
+F0 "isense" 50
+F1 "isense.sch" 50
 $EndSheet
 $EndSCHEMATC
