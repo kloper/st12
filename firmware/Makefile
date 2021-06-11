@@ -1,0 +1,16 @@
+
+export PATH := $(HOME)/local/gcc-arm-none-eabi-10-2020-q4-major/bin:$(PATH)
+
+PROJECT = st12
+BUILD_DIR = ./build
+
+OPENCM3_DIR=../../stm32/libopencm3
+OPENCM3_INC = $(OPENCM3_DIR)/include
+
+CFILES = main.c
+
+DEVICE = stm32f030F4
+
+include $(OPENCM3_DIR)/mk/genlink-config.mk
+include $(OPENCM3_DIR)/mk/genlink-rules.mk
+include $(OPENCM3_DIR)/tests/rules.mk

@@ -1,0 +1,7 @@
+*.o
+*.d
+.backup
+build
+generated*
+*.bin
+*.elf
