@@ -7,7 +7,12 @@ BUILD_DIR = ./build
 OPENCM3_DIR=../../stm32/libopencm3
 OPENCM3_INC = $(OPENCM3_DIR)/include
 
-CFILES = main.c
+CFILES = \
+ st12_adc.c \
+ st12_dma.c \
+ st12_gpio.c \
+ st12_ptimer.c \
+ main.c
 
 DEVICE = stm32f030F4
 

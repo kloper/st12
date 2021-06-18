@@ -17,39 +17,14 @@
  *
  * Copyright (c) 2021 Dimitry Kloper <kloper@users.sf.net>
  *
- * main.c -- Main file for ST12
+ * st12_ptimer.h -- Periodic timer for ST12
  *
  */
 
-#include <libopencm3/stm32/adc.h>
-#include <libopencm3/stm32/rcc.h>
+#pragma once
 
-#include "st12.h"
-#include "st12_adc.h"
-#include "st12_dma.h"
-#include "st12_gpio.h"
-#include "st12_ptimer.h"
-
-int main(void) {
-  for (int i = 0; i < 100000; i++) {	
-    __asm__("nop");
-  }
-  
-  rcc_clock_setup_in_hse_8mhz_out_48mhz();
-
-  gpio_init();
-  dma_init();
-  adc_init();
-  periodic_timer_init();
-  
-  adc_start_conversion_regular(ADC1);
-
-  st12_adc_values_t state = {0};  
-  while (1) {
-    periodic_timer_get_state(&state);
-    __asm__("wfi");
-  }
-}
+extern void periodic_timer_init(void);
+extern void periodic_timer_get_state(st12_adc_values_t *state);
 
 /*
  * end of file

@@ -17,39 +17,32 @@
  *
  * Copyright (c) 2021 Dimitry Kloper <kloper@users.sf.net>
  *
- * main.c -- Main file for ST12
+ * st12_adc.h -- ADC stuff for ST12
  *
  */
 
-#include <libopencm3/stm32/adc.h>
-#include <libopencm3/stm32/rcc.h>
+#pragma once
 
-#include "st12.h"
-#include "st12_adc.h"
-#include "st12_dma.h"
-#include "st12_gpio.h"
-#include "st12_ptimer.h"
+#define ST12_ADC_ISENSE_CHAN 0
+#define ST12_ADC_TSENSE_CHAN 1
+#define ST12_ADC_CJ_CHAN 3
+#define ST12_ADC_VREF_CHAN 17
 
-int main(void) {
-  for (int i = 0; i < 100000; i++) {	
-    __asm__("nop");
-  }
-  
-  rcc_clock_setup_in_hse_8mhz_out_48mhz();
+#define ST12_ADC_ISENSE_INDEX 0
+#define ST12_ADC_TSENSE_INDEX 1
+#define ST12_ADC_CJ_INDEX 2
+#define ST12_ADC_VREF_INDEX 3
 
-  gpio_init();
-  dma_init();
-  adc_init();
-  periodic_timer_init();
-  
-  adc_start_conversion_regular(ADC1);
+#define ST12_VREF_CALIB (*(uint16_t *)0x1FFFF7B8)
 
-  st12_adc_values_t state = {0};  
-  while (1) {
-    periodic_timer_get_state(&state);
-    __asm__("wfi");
-  }
-}
+#define ST12_ADC_NCHANNELS (ST12_ADC_VREF_INDEX + 1)
+
+extern void adc_init(void);
+extern void adc_update_collectors(void);
+extern void adc_update_values(void);
+extern volatile uint16_t *adc_get_raw_values(uint32_t *size);
+extern volatile int32_t *adc_get_values(uint32_t *size);
+extern void adc_get_state(st12_adc_values_t *state);
 
 /*
  * end of file
