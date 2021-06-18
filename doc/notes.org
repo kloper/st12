@@ -1,0 +1,13 @@
+* Notes for ST12 development
+
+** Firmware work plan
+
+  1. ADC in for I_SENSE
+  2. ADC in for T_SENSE
+  3. ADC in for cold junction thermistor
+  4. Initial calibration for ADC inputs
+  5. GPIO input for SHAKE_SENSE
+  6. GPIO input for rotary encoder
+  7. I2C interface with EEPROM
+  8. I2C interface with Pato display controller
+   
