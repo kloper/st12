@@ -48,10 +48,10 @@ void periodic_timer_init(void) {
   timer_enable_irq(TIM14, TIM_DIER_UIE);
   timer_set_counter(TIM14, 0);
   timer_set_prescaler(TIM14, 128 - 1);
-  timer_set_period(TIM14, 3750 - 1);
+  timer_set_period(TIM14, 375 - 1);
   timer_enable_counter(TIM14);
 
-  nvic_set_priority(NVIC_TIM14_IRQ, 2);
+  nvic_set_priority(NVIC_TIM14_IRQ, 1);
   nvic_enable_irq(NVIC_TIM14_IRQ);
 }
 

@@ -24,6 +24,8 @@
 #pragma once
 
 extern void gpio_init(void);
+extern void gpio_heater_control(uint8_t is_on);
+extern void gpio_heater_toggle(void);
 
 /* 
  * end of file

@@ -11,3 +11,8 @@
   7. I2C interface with EEPROM
   8. I2C interface with Pato display controller
    
+** Source of type-all.pdf
+
+   https://www.tayloredge.com/reference/Tables/thermocouple01.pdf
+
+   

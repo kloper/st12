@@ -17,21 +17,13 @@
  *
  * Copyright (c) 2021 Dimitry Kloper <kloper@users.sf.net> 
  *
- * st12.h -- Common declarations for ST12
+ * st12_temp.h -- ST12 temperature calculations
  *
  */
 
 #pragma once
 
-typedef struct _st12_adc_values {
-  int32_t i_sense;
-  int32_t i_sense_der;
-  int32_t t_sense;
-  int32_t t_sense_der;
-  int32_t cj_sense;
-  int32_t cj_sense_der;
-  uint32_t count;
-} st12_adc_values_t;
+extern int32_t temp_convert(const st12_adc_values_t *adc_values);
 
 /* 
  * end of file

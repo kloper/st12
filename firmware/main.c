@@ -20,6 +20,8 @@
  * main.c -- Main file for ST12
  *
  */
+#include <stdlib.h>
+#include <string.h>
 
 #include <libopencm3/stm32/adc.h>
 #include <libopencm3/stm32/rcc.h>
@@ -29,6 +31,16 @@
 #include "st12_dma.h"
 #include "st12_gpio.h"
 #include "st12_ptimer.h"
+#include "st12_temp.h"
+
+typedef enum _main_loop_state {
+  STATE_IDLE,
+  STATE_MEASURE_WAIT  
+} main_loop_state_t;
+
+const uint32_t g_idle_state_count = 300;
+const uint32_t g_wait_state_count = 25;
+int32_t g_target_temperature = 250000;
 
 int main(void) {
   for (int i = 0; i < 100000; i++) {	
@@ -44,9 +56,41 @@ int main(void) {
   
   adc_start_conversion_regular(ADC1);
 
-  st12_adc_values_t state = {0};  
+  st12_adc_values_t adc_state = {0};
+  main_loop_state_t state = STATE_IDLE;
+  uint32_t idle_state_count = 0;
+  uint32_t wait_state_count = 0;
+  uint32_t prev_count = 0;
+  uint32_t count = 0;
+  
   while (1) {
-    periodic_timer_get_state(&state);
+    periodic_timer_get_state(&adc_state);
+    
+    count = adc_state.count - prev_count;
+    prev_count = adc_state.count;
+
+    switch(state) {
+      case STATE_IDLE: {
+        idle_state_count += count;
+        if(idle_state_count >= g_idle_state_count) {
+          idle_state_count = 0;
+          state = STATE_MEASURE_WAIT;
+          gpio_heater_control(0);
+        }
+      } break;
+      case STATE_MEASURE_WAIT: {
+        wait_state_count += count;
+        if(wait_state_count >= g_wait_state_count) {
+          wait_state_count = 0;
+          int32_t temp = temp_convert(&adc_state);
+
+          if(temp <= g_target_temperature) {            
+            gpio_heater_control(1);
+            state = STATE_IDLE;                      
+          }
+        }
+      } break;        
+    }
     __asm__("wfi");
   }
 }

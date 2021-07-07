@@ -33,7 +33,7 @@
 #define ST12_ADC_CJ_INDEX 2
 #define ST12_ADC_VREF_INDEX 3
 
-#define ST12_VREF_CALIB (*(uint16_t *)0x1FFFF7B8)
+#define ST12_VREF_CALIB (*(uint16_t *)0x1FFFF7BA)
 
 #define ST12_ADC_NCHANNELS (ST12_ADC_VREF_INDEX + 1)
 
@@ -43,7 +43,7 @@ extern void adc_update_values(void);
 extern volatile uint16_t *adc_get_raw_values(uint32_t *size);
 extern volatile int32_t *adc_get_values(uint32_t *size);
 extern void adc_get_state(st12_adc_values_t *state);
-
+extern void adc_clear_collectors(void);
 /*
  * end of file
  */

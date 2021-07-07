@@ -12,7 +12,11 @@ CFILES = \
  st12_dma.c \
  st12_gpio.c \
  st12_ptimer.c \
+ st12_linapprox.c \
+ st12_temp.c \
  main.c
+
+OPT = -g -O0
 
 DEVICE = stm32f030F4
 

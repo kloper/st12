@@ -30,10 +30,41 @@
 
 #include "st12.h"
 #include "st12_adc.h"
+#include "st12_gpio.h"
 
+/**
+ * @brief Array of ADC channels read in a single ADC scan
+ *
+ * This includes the internal reference channel for later Vdd compensation.
+ */
 static volatile uint16_t g_adc_raw_values[ST12_ADC_NCHANNELS] = {0};
+
+/**
+ * @brief Array of voltage compensated ADC channel sums
+ *
+ * This array contains sums of voltage compensated ADC values for each
+ * channel.
+ *
+ * Sums and @ref g_adc_count are updated by DMA completion interrupt.
+ *
+ * Sums and @ref g_adc_count are cleared by periodic timer click,
+ * while averages and differentials are propagated to @ref
+ * g_adc_values. Internal voltage reference is omitted from this
+ * array.
+ */
 static volatile uint32_t g_adc_collectors[ST12_ADC_NCHANNELS - 1] = {0};
+
+/**
+ * @brief Array of voltage compensated ADC channel averages and their
+ * differentials
+ *
+ * This array is updated on every periodic timer tick.
+ */
 static volatile int32_t g_adc_values[(ST12_ADC_NCHANNELS - 1) * 2] = {0};
+
+/**
+ * @brief Count of completed ADC DMA requests.
+ */
 static volatile uint32_t g_adc_count = 0;
 
 void adc_init(void) {
@@ -59,31 +90,37 @@ void adc_init(void) {
   adc_power_on(ADC1);
 }
 
+void adc_clear_collectors(void) {
+  for (int i = 0; i < ST12_ADC_NCHANNELS - 1; i++) {
+    g_adc_collectors[i] = 0;    
+  }
+  g_adc_count = 0;
+}
+
 void adc_update_collectors(void) {
   for (int i = 0; i < ST12_ADC_NCHANNELS - 1; i++) {
-    g_adc_collectors[i] += (uint32_t)g_adc_raw_values[i] *
-                           (uint32_t)g_adc_raw_values[ST12_ADC_VREF_INDEX] /
-                           ST12_VREF_CALIB;
-  }
+    g_adc_collectors[i] += (uint32_t)g_adc_raw_values[i] * ST12_VREF_CALIB /
+                           (uint32_t)g_adc_raw_values[ST12_ADC_VREF_INDEX];
+  }  
   g_adc_count++;
 }
 
-void adc_update_values(void) {
-  volatile uint32_t collectors[ST12_ADC_NCHANNELS-1];
+void adc_update_values(void) {  
+  volatile uint32_t collectors[ST12_ADC_NCHANNELS - 1];
   volatile uint32_t adc_count = g_adc_count;
+  
+  if (adc_count != 0) {
+    memcpy((char *)collectors, (char *)g_adc_collectors, sizeof(collectors));
 
-  if(adc_count != 0) {
-    memcpy((char*)collectors, (char*)g_adc_collectors, sizeof(collectors));
-    
-    g_adc_count = 0;  
-    memset((char*)g_adc_collectors, 0, sizeof(g_adc_collectors));
-    
-    for(int i = 0; i < ST12_ADC_NCHANNELS-1; i++) {
+    g_adc_count = 0;
+    memset((char *)g_adc_collectors, 0, sizeof(g_adc_collectors));
+
+    for (int i = 0; i < ST12_ADC_NCHANNELS - 1; i++) {
       int32_t value = collectors[i] / adc_count;
-      g_adc_values[2*i+1] = value - g_adc_values[2*i];
-      g_adc_values[2*i] = value;
+      g_adc_values[2 * i + 1] = value - g_adc_values[2 * i];
+      g_adc_values[2 * i] = value;
     }
-  }  
+  }
 }
 
 volatile uint16_t *adc_get_raw_values(uint32_t *size) {
