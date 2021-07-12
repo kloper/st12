@@ -17,29 +17,27 @@
  *
  * Copyright (c) 2021 Dimitry Kloper <kloper@users.sf.net> 
  *
- * st12.h -- Common declarations for ST12
+ * st12_i2c.c -- I2C configuration for ST12
  *
  */
 
-#pragma once
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/i2c.h>
 
-#ifndef MAX
-#define MAX(a,b) (((a)<(b))?(b):(a))
-#endif
+#include "st12.h"
+#include "st12_i2c.h"
 
-#ifndef MIN
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#endif
-
-typedef struct _st12_adc_values {
-  int32_t i_sense;
-  int32_t i_sense_der;
-  int32_t t_sense;
-  int32_t t_sense_der;
-  int32_t cj_sense;
-  int32_t cj_sense_der;
-  uint32_t count;
-} st12_adc_values_t;
+void i2c_init(void) {
+  rcc_periph_clock_enable(RCC_I2C1);
+  
+  i2c_peripheral_disable(I2C1);
+  i2c_set_speed(I2C1, i2c_speed_sm_100k, rcc_apb1_frequency / 1000000);
+  i2c_enable_analog_filter(I2C1);
+  i2c_set_digital_filter(I2C1, 1);
+  i2c_disable_stretching(I2C1);
+  i2c_set_7bit_addr_mode(I2C1);
+  i2c_peripheral_enable(I2C1);  
+}
 
 /* 
  * end of file

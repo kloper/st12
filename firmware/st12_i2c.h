@@ -17,29 +17,13 @@
  *
  * Copyright (c) 2021 Dimitry Kloper <kloper@users.sf.net> 
  *
- * st12.h -- Common declarations for ST12
+ * st12_i2c.h -- I2C configuration for ST12
  *
  */
 
 #pragma once
 
-#ifndef MAX
-#define MAX(a,b) (((a)<(b))?(b):(a))
-#endif
-
-#ifndef MIN
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#endif
-
-typedef struct _st12_adc_values {
-  int32_t i_sense;
-  int32_t i_sense_der;
-  int32_t t_sense;
-  int32_t t_sense_der;
-  int32_t cj_sense;
-  int32_t cj_sense_der;
-  uint32_t count;
-} st12_adc_values_t;
+extern void i2c_init(void);
 
 /* 
  * end of file

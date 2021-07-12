@@ -15,6 +15,8 @@ CFILES = \
  st12_linapprox.c \
  st12_temp.c \
  st12_nvic.c \
+ st12_i2c.c \
+ st12_config.c \
  main.c
 
 OPT = -g -O0

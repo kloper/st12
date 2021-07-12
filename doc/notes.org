@@ -16,3 +16,9 @@
    https://www.tayloredge.com/reference/Tables/thermocouple01.pdf
 
    
+** 24LC1052
+
+I2C Address is 0x50 for block 0 and 0x54 for block 1
+Address is 16 bit wide.
+Write is 16bit address + data bytes
+Read is 16bit address write + data bytes read

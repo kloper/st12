@@ -17,29 +17,26 @@
  *
  * Copyright (c) 2021 Dimitry Kloper <kloper@users.sf.net> 
  *
- * st12.h -- Common declarations for ST12
+ * st12_config.h -- ST12 persistent configuration, based on EEPROM
  *
  */
 
 #pragma once
 
-#ifndef MAX
-#define MAX(a,b) (((a)<(b))?(b):(a))
-#endif
+typedef struct _st12_config {
+  uint32_t crc;
+  int32_t target_temperature;
+  uint32_t overshoot_period_width;
+  uint32_t measure_period_width;
+} st12_config_t;
 
-#ifndef MIN
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#endif
+const st12_config_t *config_get(void);
+void config_init(void);
+void config_save(void);
+void config_set_target_temperature(int32_t temp);
+void config_set_overshoot_period_width(uint32_t width);
+void config_set_measure_period_width(uint32_t width);
 
-typedef struct _st12_adc_values {
-  int32_t i_sense;
-  int32_t i_sense_der;
-  int32_t t_sense;
-  int32_t t_sense_der;
-  int32_t cj_sense;
-  int32_t cj_sense_der;
-  uint32_t count;
-} st12_adc_values_t;
 
 /* 
  * end of file

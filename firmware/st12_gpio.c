@@ -29,7 +29,11 @@
 void gpio_init(void) {
   rcc_periph_clock_enable(RCC_GPIOA);
 
-  gpio_set_af(GPIOA, GPIO_MODE_ANALOG, GPIO0 | GPIO1 | GPIO3);
+  gpio_mode_setup(GPIOA, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO0 | GPIO1 | GPIO3);  
+
+  gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO9 | GPIO10);  
+  gpio_set_af(GPIOA, GPIO_AF4, GPIO9 | GPIO10);
+  
   gpio_mode_setup(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO4);
 }
 

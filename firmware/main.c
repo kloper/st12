@@ -32,15 +32,13 @@
 #include "st12_gpio.h"
 #include "st12_ptimer.h"
 #include "st12_temp.h"
+#include "st12_i2c.h"
+#include "st12_config.h"
 
 typedef enum _main_loop_state {
   STATE_IDLE,
   STATE_MEASURE_WAIT  
 } main_loop_state_t;
-
-const uint32_t g_idle_state_count = 300;
-const uint32_t g_wait_state_count = 25;
-int32_t g_target_temperature = 250000;
 
 int main(void) {
   const st12_config_t *config = NULL;
@@ -50,7 +48,11 @@ int main(void) {
   gpio_init();
   dma_init();
   adc_init();
+  i2c_init();  
   periodic_timer_init();
+  config_init();
+
+  config = config_get();
   
   adc_start_conversion_regular(ADC1);
 
@@ -70,7 +72,7 @@ int main(void) {
     switch(state) {
       case STATE_IDLE: {
         idle_state_count += count;
-        if(idle_state_count >= g_idle_state_count) {
+        if(idle_state_count >= config->overshoot_period_width) {
           idle_state_count = 0;
           state = STATE_MEASURE_WAIT;
           gpio_heater_control(0);
@@ -78,11 +80,11 @@ int main(void) {
       } break;
       case STATE_MEASURE_WAIT: {
         wait_state_count += count;
-        if(wait_state_count >= g_wait_state_count) {
+        if(wait_state_count >= config->measure_period_width) {
           wait_state_count = 0;
           int32_t temp = temp_convert(&adc_state);
 
-          if(temp <= g_target_temperature) {            
+          if(temp <= config->target_temperature) {            
             gpio_heater_control(1);
             state = STATE_IDLE;                      
           }
