@@ -14,6 +14,7 @@ CFILES = \
  st12_ptimer.c \
  st12_linapprox.c \
  st12_temp.c \
+ st12_nvic.c \
  main.c
 
 OPT = -g -O0

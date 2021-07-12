@@ -43,12 +43,10 @@ const uint32_t g_wait_state_count = 25;
 int32_t g_target_temperature = 250000;
 
 int main(void) {
-  for (int i = 0; i < 100000; i++) {	
-    __asm__("nop");
-  }
-  
-  rcc_clock_setup_in_hse_8mhz_out_48mhz();
+  const st12_config_t *config = NULL;
 
+  //rcc_clock_setup_in_hse_8mhz_out_48mhz();
+  rcc_clock_setup_in_hsi_out_48mhz();
   gpio_init();
   dma_init();
   adc_init();
