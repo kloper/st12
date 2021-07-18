@@ -17,6 +17,8 @@ CFILES = \
  st12_nvic.c \
  st12_i2c.c \
  st12_config.c \
+ st12_display.c \
+ st12_rotary.c \
  main.c
 
 OPT = -g -O0

@@ -21,20 +21,37 @@
  *
  */
 
+#include <libopencm3/cm3/nvic.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/exti.h>
 
+#include "st12.h"
 #include "st12_gpio.h"
+#include "st12_rotary.h"
+
+void exti4_15_isr(void) {
+  rotary_update_state();
+  exti_reset_request(EXTI5 | EXTI6 | EXTI7);
+}
 
 void gpio_init(void) {
   rcc_periph_clock_enable(RCC_GPIOA);
 
-  gpio_mode_setup(GPIOA, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO0 | GPIO1 | GPIO3);  
+  gpio_mode_setup(GPIOA, GPIO_MODE_ANALOG,
+                  GPIO_PUPD_NONE, GPIO0 | GPIO1 | GPIO3);  
 
   gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO9 | GPIO10);  
   gpio_set_af(GPIOA, GPIO_AF4, GPIO9 | GPIO10);
   
   gpio_mode_setup(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO4);
+  gpio_mode_setup(GPIOA, GPIO_MODE_INPUT,
+                  GPIO_PUPD_NONE, GPIO5 | GPIO6 | GPIO7);
+
+  nvic_enable_irq(NVIC_EXTI4_15_IRQ);
+  exti_set_trigger(EXTI5 | EXTI6 | EXTI7, EXTI_TRIGGER_FALLING);
+  exti_select_source(EXTI5 | EXTI6 | EXTI7, GPIOA);
+  exti_enable_request(EXTI5 | EXTI6 | EXTI7);
 }
 
 void gpio_heater_control(uint8_t is_on) {
@@ -47,6 +64,10 @@ void gpio_heater_control(uint8_t is_on) {
 
 void gpio_heater_toggle(void) {
     gpio_toggle(GPIOA, GPIO4);
+}
+
+uint16_t gpio_get_rotary_state(void) {
+  return gpio_get(GPIOA, GPIO5 | GPIO6 | GPIO7);
 }
 
 /*

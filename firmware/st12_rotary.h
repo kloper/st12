@@ -17,16 +17,16 @@
  *
  * Copyright (c) 2021 Dimitry Kloper <kloper@users.sf.net> 
  *
- * st12_gpio.h -- GPIO stuff for ST12
+ * st12_rotary.h -- ST12 rotary encoder stuff
  *
  */
 
 #pragma once
 
-extern void gpio_init(void);
-extern void gpio_heater_control(uint8_t is_on);
-extern void gpio_heater_toggle(void);
-extern uint16_t gpio_get_rotary_state(void);
+extern void rotary_init(void);
+extern void rotary_update_state(void);
+extern int32_t rotary_get_counter(void);
+extern uint32_t rotary_get_press_counter(void);
 
 /* 
  * end of file

@@ -25,8 +25,8 @@
 
 #include <libopencm3/cm3/scb.h>
 
-#include <st12.h>
-#include <st12_nvic.h>
+#include "st12.h"
+#include "st12_nvic.h"
 
 static void unexpected_exception_handler(uint8_t id) {
   volatile int block = 1;
@@ -63,10 +63,6 @@ void exti2_3_isr(void) {
   unexpected_exception_handler(EXTI2_3_ISR);
 }
 
-void exti4_15_isr(void) {
-  unexpected_exception_handler(EXTI4_15_ISR);
-}
-
 void tsc_isr(void) {
   unexpected_exception_handler(TSC_ISR);
 }
@@ -94,10 +90,6 @@ void tim1_cc_isr(void) {
 
 void tim2_isr(void) {
   unexpected_exception_handler(TIM2_ISR);
-}
-
-void tim3_isr(void) {
-  unexpected_exception_handler(TIM3_ISR);
 }
 
 void tim6_dac_isr(void) {

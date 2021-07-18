@@ -17,16 +17,14 @@
  *
  * Copyright (c) 2021 Dimitry Kloper <kloper@users.sf.net> 
  *
- * st12_gpio.h -- GPIO stuff for ST12
+ * st12_display.h -- Display interface for ST12
  *
  */
 
 #pragma once
 
-extern void gpio_init(void);
-extern void gpio_heater_control(uint8_t is_on);
-extern void gpio_heater_toggle(void);
-extern uint16_t gpio_get_rotary_state(void);
+extern void display_ctrl(int display_on, int cursor_on, int blink_on);
+extern void display_print(char *str);
 
 /* 
  * end of file
