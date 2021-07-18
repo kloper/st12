@@ -653,28 +653,6 @@ F 3 "http://www.st.com/st-web-ui/static/active/en/resource/technical/document/da
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:C C301
-U 1 1 60CEC57D
-P 1050 3550
-F 0 "C301" H 850 3600 50  0000 L CNN
-F 1 "100nF" H 700 3500 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0603_HandSoldering" H 1088 3400 50  0001 C CNN
-F 3 "~" H 1050 3550 50  0001 C CNN
-	1    1050 3550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C C302
-U 1 1 60CED103
-P 1350 3550
-F 0 "C302" H 1465 3596 50  0000 L CNN
-F 1 "100nF" H 1465 3505 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0603_HandSoldering" H 1388 3400 50  0001 C CNN
-F 3 "~" H 1350 3550 50  0001 C CNN
-	1    1350 3550
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:C C303
 U 1 1 60CED4C7
 P 2250 3550
@@ -686,12 +664,6 @@ F 3 "~" H 2250 3550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1050 3400 1050 3200
-Connection ~ 1050 3200
-Wire Wire Line
-	1350 3400 1350 3000
-Connection ~ 1350 3000
-Wire Wire Line
 	2250 3400 2250 3300
 Wire Wire Line
 	2250 3300 2500 3300
@@ -701,16 +673,7 @@ Wire Wire Line
 	2500 3000 2250 3000
 Connection ~ 2250 3000
 Wire Wire Line
-	1050 3700 1050 3750
-Wire Wire Line
-	1050 3750 1350 3750
-Wire Wire Line
 	2250 3750 2250 3700
-Wire Wire Line
-	1350 3700 1350 3750
-Connection ~ 1350 3750
-Wire Wire Line
-	1350 3750 2250 3750
 NoConn ~ 10150 2200
 $Comp
 L Connector_Generic:Conn_02x03_Odd_Even J303
@@ -753,6 +716,6 @@ NoConn ~ 3500 1200
 NoConn ~ 3500 1400
 NoConn ~ 3550 2900
 NoConn ~ 3800 3660
-Text Label 1890 3750 2    50   ~ 0
+Text Label 2250 3750 2    50   ~ 0
 ROT_GND
 $EndSCHEMATC
