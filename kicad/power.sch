@@ -14,7 +14,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L TPS5430DDAR:TPS5430DDAR U?
+L st12-rescue:TPS5430DDAR-TPS5430DDAR U?
 U 1 1 60B0AF4B
 P 4400 1700
 AR Path="/60B0AF4B" Ref="U?"  Part="1" 
@@ -242,7 +242,7 @@ P 6450 1650
 AR Path="/60B0AFBE" Ref="C?"  Part="1" 
 AR Path="/60AEC464/60B0AFBE" Ref="C208"  Part="1" 
 F 0 "C208" H 6568 1696 50  0000 L CNN
-F 1 "220uF 6V" V 6600 1250 50  0000 L CNN
+F 1 "220uF 10V" V 6600 1250 50  0000 L CNN
 F 2 "Capacitors_Tantalum_SMD:CP_Tantalum_Case-X_EIA-7343-43_Hand" H 6488 1500 50  0001 C CNN
 F 3 "~" H 6450 1650 50  0001 C CNN
 	1    6450 1650
@@ -631,7 +631,7 @@ Wire Wire Line
 	2350 3550 1950 3550
 Connection ~ 1950 3550
 $Comp
-L FDS4435BZ:FDS4435BZ Q?
+L st12-rescue:FDS4435BZ-FDS4435BZ Q?
 U 1 1 60B0B08F
 P 2250 4400
 AR Path="/60B0B08F" Ref="Q?"  Part="1" 
@@ -830,7 +830,7 @@ $EndComp
 Text Label 1200 6950 2    50   ~ 0
 V24HEATER
 $Comp
-L OPA237NA_250:OPA237NA_250 U?
+L st12-rescue:OPA237NA_250-OPA237NA_250 U?
 U 1 1 60B0B126
 P 9150 3200
 AR Path="/60B0B126" Ref="U?"  Part="1" 
@@ -1233,7 +1233,7 @@ Text GLabel 3300 7100 2    50   Output ~ 0
 COLD_SENSE
 Wire Wire Line
 	3100 6800 3100 6750
-Text Label 2700 7100 2    50   ~ 0
+Text Label 3000 7100 2    50   ~ 0
 COLD
 Connection ~ 3100 7100
 Wire Wire Line
@@ -1260,24 +1260,11 @@ P 3100 6950
 AR Path="/60B0B114" Ref="R?"  Part="1" 
 AR Path="/60AEC464/60B0B114" Ref="R211"  Part="1" 
 F 0 "R211" H 3030 6904 50  0000 R CNN
-F 1 "7.5K" V 3100 7050 50  0000 R CNN
+F 1 "120K" V 3100 7050 50  0000 R CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 3030 6950 50  0001 C CNN
 F 3 "~" H 3100 6950 50  0001 C CNN
 	1    3100 6950
 	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R?
-U 1 1 60B0B10E
-P 2850 7100
-AR Path="/60B0B10E" Ref="R?"  Part="1" 
-AR Path="/60AEC464/60B0B10E" Ref="R210"  Part="1" 
-F 0 "R210" H 2780 7054 50  0000 R CNN
-F 1 "7.5K" V 2850 7200 50  0000 R CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2780 7100 50  0001 C CNN
-F 3 "~" H 2850 7100 50  0001 C CNN
-	1    2850 7100
-	0    -1   -1   0   
 $EndComp
 $Comp
 L Device:R R?
@@ -1559,16 +1546,6 @@ Wire Wire Line
 	850  7050 850  6950
 Wire Wire Line
 	850  6950 1200 6950
-Wire Notes Line
-	2750 4650 3350 4650
-Wire Notes Line
-	3350 4650 3350 5200
-Wire Notes Line
-	3350 5200 2750 5200
-Wire Notes Line
-	2750 5200 2750 4650
-Text Notes 3050 5150 0    50   ~ 0
-Not sure if needed.\nDraws HEATER line up\nwhen it is unengaged
 Wire Wire Line
 	2350 3200 2950 3200
 Text GLabel 3150 3200 2    50   Output ~ 0
@@ -1576,4 +1553,63 @@ I_SENSE_RAW
 Connection ~ 2950 3200
 Wire Wire Line
 	2950 3200 3150 3200
+Wire Wire Line
+	4450 3950 4900 3950
+Text Label 4450 3950 0    50   ~ 0
+V24HEATER
+$Comp
+L Device:C C?
+U 1 1 60C98FC3
+P 4900 4100
+AR Path="/60C98FC3" Ref="C?"  Part="1" 
+AR Path="/60AEC464/60C98FC3" Ref="C213"  Part="1" 
+F 0 "C213" H 5015 4146 50  0000 L CNN
+F 1 "100nF" H 5015 4055 50  0000 L CNN
+F 2 "Capacitors_SMD:C_1210_HandSoldering" H 4938 3950 50  0001 C CNN
+F 3 "~" H 4900 4100 50  0001 C CNN
+	1    4900 4100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 60C994D9
+P 4900 4250
+AR Path="/60C994D9" Ref="#PWR?"  Part="1" 
+AR Path="/60AEC464/60C994D9" Ref="#PWR0239"  Part="1" 
+F 0 "#PWR0239" H 4900 4000 50  0001 C CNN
+F 1 "GND" H 4905 4077 50  0000 C CNN
+F 2 "" H 4900 4250 50  0001 C CNN
+F 3 "" H 4900 4250 50  0001 C CNN
+	1    4900 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 60C99945
+P 5450 4100
+AR Path="/60C99945" Ref="C?"  Part="1" 
+AR Path="/60AEC464/60C99945" Ref="C214"  Part="1" 
+F 0 "C214" H 5565 4146 50  0000 L CNN
+F 1 "470nF" H 5565 4055 50  0000 L CNN
+F 2 "Capacitors_SMD:C_2220_HandSoldering" H 5488 3950 50  0001 C CNN
+F 3 "~" H 5450 4100 50  0001 C CNN
+	1    5450 4100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5450 3950 4900 3950
+Connection ~ 4900 3950
+$Comp
+L power:GND #PWR?
+U 1 1 60C9F39C
+P 5450 4250
+AR Path="/60C9F39C" Ref="#PWR?"  Part="1" 
+AR Path="/60AEC464/60C9F39C" Ref="#PWR0240"  Part="1" 
+F 0 "#PWR0240" H 5450 4000 50  0001 C CNN
+F 1 "GND" H 5455 4077 50  0000 C CNN
+F 2 "" H 5450 4250 50  0001 C CNN
+F 3 "" H 5450 4250 50  0001 C CNN
+	1    5450 4250
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
