@@ -19,6 +19,7 @@ CFILES = \
  st12_config.c \
  st12_display.c \
  st12_rotary.c \
+ st12_current.c \
  main.c
 
 OPT = -g -O0
