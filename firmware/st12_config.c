@@ -28,6 +28,7 @@
 
 #include "st12.h"
 #include "st12_config.h"
+#include "st12_i2c.h"
 
 #define CONFIG_I2C_OFFSET 0
 #define CONFIG_I2C_ADDR 0x50
@@ -56,17 +57,15 @@ static uint32_t config_get_crc(void) {
 static void config_default(void) {
   g_config->target_temperature = 100000; // Milli-Celsius
   g_config->overshoot_period_width = 300; // milliseconds (periodic timer period)
-  g_config->measure_period_width = 25; // milliseconds (period timer period)  
+  g_config->measure_period_width = 50; // milliseconds (periodic timer period)  
   g_config->crc = config_get_crc();
 }
 
 void config_save(void) {
-  i2c_transfer7(
-      I2C1, CONFIG_I2C_ADDR,
-      (uint8_t*)&g_config_packet.addr,
-      sizeof(g_config_packet.addr) + sizeof(g_config_packet.config),
-      NULL, 0
-  );
+  i2c_send(CONFIG_I2C_ADDR,
+           (uint8_t*)&g_config_packet.addr,
+           sizeof(g_config_packet.addr) + sizeof(g_config_packet.config),
+           1);
 }
 
 const st12_config_t *config_get(void) {
@@ -76,12 +75,14 @@ const st12_config_t *config_get(void) {
 void config_init() {
   rcc_periph_clock_enable(RCC_CRC);
 
-  g_config_packet.addr = CONFIG_I2C_OFFSET;
-  i2c_transfer7(
-      I2C1, CONFIG_I2C_ADDR,
-      (uint8_t*)&g_config_packet.addr, sizeof(g_config_packet.addr),
-      (uint8_t*)&g_config_packet.config, sizeof(g_config_packet.config)
-  );
+  g_config_packet.addr = FLASH_ADDR(CONFIG_I2C_OFFSET);
+  i2c_send(CONFIG_I2C_ADDR,
+           (uint8_t*)&g_config_packet.addr,
+           sizeof(g_config_packet.addr),
+           0);
+  i2c_recv(CONFIG_I2C_ADDR,
+           (uint8_t*)&g_config_packet.config,
+           sizeof(g_config_packet.config));
   uint32_t crc = config_get_crc();
   if(crc != g_config->crc) {
     config_default();
@@ -89,53 +90,60 @@ void config_init() {
   }
 }
 
-static void config_write_field(size_t offset, size_t size) {
-  struct {
-    uint16_t alignment_bytes1;
-    uint16_t addr;
-    uint8_t  data[MAX(size, sizeof(g_config->crc))];
-    uint32_t alignment_bytes2;
-  } packet;
+static struct {
+  uint16_t alignment_bytes1;
+  uint16_t addr;
+  uint8_t  data[sizeof(uint32_t)];
+  uint32_t alignment_bytes2;
+} g_packet;
 
-  packet.addr = CONFIG_I2C_OFFSET + offset;
-  memcpy((char*)packet.data, (char*)g_config + offset, size);
-  
-  i2c_transfer7(
-      I2C1, CONFIG_I2C_ADDR,
-      (uint8_t*)&packet.addr, sizeof(packet.addr) + size,
-      NULL, 0
+static void config_write_uint32(size_t offset) {
+
+  g_packet.addr = FLASH_ADDR(CONFIG_I2C_OFFSET + offset);
+  *(uint32_t*)g_packet.data = *(uint32_t*)((char*)g_config + offset);
+
+  i2c_send(CONFIG_I2C_ADDR,
+           (uint8_t*)&g_packet.addr,
+           sizeof(g_packet.addr) + sizeof(uint32_t),
+           1
   );
 
-  packet.addr = CONFIG_I2C_OFFSET;
-  memcpy((char*)packet.data, (char*)&g_config->crc, sizeof(g_config->crc));
+  for(int i = 0; i < 100000; i++) {
+    __asm__("nop");
+  }
   
-  i2c_transfer7(
-      I2C1, CONFIG_I2C_ADDR,
-      (uint8_t*)&packet.addr, sizeof(packet.addr) + sizeof(g_config->crc),
-      NULL, 0
-  );  
+  g_packet.addr = FLASH_ADDR(CONFIG_I2C_OFFSET);
+  *(uint32_t*)g_packet.data = g_config->crc;
+
+  i2c_send(CONFIG_I2C_ADDR,
+           (uint8_t*)&g_packet.addr,
+           sizeof(g_packet.addr) + sizeof(uint32_t),
+           1
+  );
+
+  for(int i = 0; i < 100000; i++) {
+    __asm__("nop");
+  }
+
 }
 
 void config_set_target_temperature(int32_t temp) {
   g_config->target_temperature = temp;
   g_config->crc = config_get_crc();
-  config_write_field(offsetof(st12_config_t, target_temperature),
-                     sizeof(g_config->target_temperature));
+  config_write_uint32(offsetof(st12_config_t, target_temperature));
 }
 
 void config_set_overshoot_period_width(uint32_t width) {
   g_config->overshoot_period_width = width;
   g_config->crc = config_get_crc();  
-  config_write_field(offsetof(st12_config_t, overshoot_period_width),
-                     sizeof(g_config->overshoot_period_width));
+  config_write_uint32(offsetof(st12_config_t, overshoot_period_width));
   
 }
 
 void config_set_measure_period_width(uint32_t width) {
   g_config->measure_period_width = width;
   g_config->crc = config_get_crc();    
-  config_write_field(offsetof(st12_config_t, measure_period_width),
-                     sizeof(g_config->measure_period_width));
+  config_write_uint32(offsetof(st12_config_t, measure_period_width));
 }
 
 

@@ -23,6 +23,8 @@
 
 #pragma once
 
+#define FLASH_ADDR(addr) ((((addr) & 0xff) << 8) | (((addr) & 0xff00) >> 8))
+
 typedef struct _st12_config {
   uint32_t crc;
   int32_t target_temperature;
