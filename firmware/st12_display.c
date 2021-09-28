@@ -29,6 +29,7 @@
 
 #include "st12.h"
 #include "st12_display.h"
+#include "st12_i2c.h"
 
 #define PATO_I2C_ADDR 0x41
 
@@ -75,45 +76,11 @@ static uint8_t crc8(uint8_t *ptr, uint16_t size)
    return crc;
 }
 
-static void send_packet(pato_packet_t *packet) {
-  i2c_set_7bit_address(I2C1, PATO_I2C_ADDR);
-  i2c_set_write_transfer_dir(I2C1);
-  i2c_set_bytes_to_transfer(I2C1, sizeof(pato_packet_t));
-  i2c_disable_autoend(I2C1);
-
-  i2c_send_start(I2C1);
-  while(!i2c_transmit_int_status(I2C1));
-  i2c_send_data(I2C1, packet->cmd);
-  while(!i2c_transmit_int_status(I2C1));
-  i2c_send_data(I2C1, packet->data0);
-  while(!i2c_transmit_int_status(I2C1));
-  i2c_send_data(I2C1, packet->data1);
-  while(!i2c_transmit_int_status(I2C1));
-  i2c_send_data(I2C1, packet->crc);
-  while(!i2c_transmit_int_status(I2C1));
-  i2c_send_data(I2C1, packet->zero);
-  while (!i2c_transfer_complete(I2C1));
-  i2c_send_stop(I2C1);
-}
-
-static void recv_packet(pato_packet_t *packet) {
-  i2c_set_7bit_address(I2C1, PATO_I2C_ADDR);
-  i2c_set_read_transfer_dir(I2C1);
-  i2c_set_bytes_to_transfer(I2C1, sizeof(pato_packet_t));
-  i2c_disable_autoend(I2C1);
-
-  i2c_send_start(I2C1);  
-  while (!i2c_received_data(I2C1));
-  packet->cmd = i2c_get_data(I2C1);
-  while (!i2c_received_data(I2C1));
-  packet->data0 = i2c_get_data(I2C1);
-  while (!i2c_received_data(I2C1));
-  packet->data1 = i2c_get_data(I2C1);
-  while (!i2c_received_data(I2C1));
-  packet->crc = i2c_get_data(I2C1);
-  while (!i2c_received_data(I2C1));
-  packet->zero = i2c_get_data(I2C1);
-  i2c_send_stop(I2C1);
+static void query(pato_packet_t *request, pato_packet_t *reply) {
+  i2c_send(PATO_I2C_ADDR, (uint8_t*)request, sizeof(pato_packet_t), 1);
+  for(int i = 0; i < 1000; i++);
+  i2c_recv(PATO_I2C_ADDR, (uint8_t*)reply, sizeof(pato_packet_t)); 
+  for(int i = 0; i < 1000; i++);
 }
 
 void display_ctrl(int display_on, int cursor_on, int blink_on) {
@@ -129,9 +96,7 @@ void display_ctrl(int display_on, int cursor_on, int blink_on) {
   request.crc = crc8((uint8_t*)&request, 3);
   request.zero = 0;
 
-  send_packet(&request);
-  for(volatile int i = 0; i < 10000; i++);
-  recv_packet(&reply);    
+  query(&request, &reply);
 }
 
 void display_print(char *str) {
@@ -145,9 +110,7 @@ void display_print(char *str) {
   request.crc = crc8((uint8_t*)&request, 3);
   request.zero = 0;
 
-  send_packet(&request);
-  for(volatile int i = 0; i < 10000; i++);
-  recv_packet(&reply);  
+  query(&request, &reply);
   
   while(1) {
     request.cmd = PATO_CMD_PRINT_PUT;
@@ -156,9 +119,7 @@ void display_print(char *str) {
     request.crc = crc8((uint8_t*)&request, 3);
     request.zero = 0;
 
-    send_packet(&request);
-    for(volatile int i = 0; i < 10000; i++);
-    recv_packet(&reply);
+    query(&request, &reply);
     
     if(*str == 0)
       break;
@@ -170,9 +131,7 @@ void display_print(char *str) {
   request.crc = crc8((uint8_t*)&request, 3);
   request.zero = 0;
 
-  send_packet(&request);
-  for(volatile int i = 0; i < 10000; i++);
-  recv_packet(&reply);  
+  query(&request, &reply);
 }
 
 /* 
