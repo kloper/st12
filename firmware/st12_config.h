@@ -30,12 +30,16 @@ typedef struct _st12_config {
   int32_t target_temperature;
   uint32_t overshoot_period_width;
   uint32_t measure_period_width;
+  uint32_t temp_scale;
+  int32_t temp_offset;
 } st12_config_t;
 
 const st12_config_t *config_get(void);
 void config_init(void);
 void config_save(void);
 void config_set_target_temperature(int32_t temp);
+void config_set_temperature_scale(uint32_t scale);
+void config_set_temperature_offset(int32_t offset);
 void config_set_overshoot_period_width(uint32_t width);
 void config_set_measure_period_width(uint32_t width);
 

@@ -57,7 +57,11 @@ static uint32_t config_get_crc(void) {
 static void config_default(void) {
   g_config->target_temperature = 100000; // Milli-Celsius
   g_config->overshoot_period_width = 300; // milliseconds (periodic timer period)
-  g_config->measure_period_width = 50; // milliseconds (periodic timer period)  
+  g_config->measure_period_width = 50; // milliseconds (periodic timer period)
+  g_config->temp_scale = 840; // multiply ADC clicks (corresponding to mV)
+                              // by 0.840 before temperature conversion
+  g_config->temp_offset = 8; // offset ADC clicks before
+                             // temperature conversion
   g_config->crc = config_get_crc();
 }
 
@@ -131,6 +135,18 @@ void config_set_target_temperature(int32_t temp) {
   g_config->target_temperature = temp;
   g_config->crc = config_get_crc();
   config_write_uint32(offsetof(st12_config_t, target_temperature));
+}
+
+void config_set_temperature_scale(uint32_t scale) {
+  g_config->temp_scale = scale;
+  g_config->crc = config_get_crc();
+  config_write_uint32(offsetof(st12_config_t, temp_scale));
+}
+
+void config_set_temperature_offset(int32_t offset) {
+  g_config->temp_offset = offset;
+  g_config->crc = config_get_crc();
+  config_write_uint32(offsetof(st12_config_t, temp_offset));
 }
 
 void config_set_overshoot_period_width(uint32_t width) {

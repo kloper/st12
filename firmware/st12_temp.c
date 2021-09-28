@@ -25,13 +25,21 @@
 #include <stdlib.h>
 
 #include "st12.h"
+#include "st12_config.h"
 #include "st12_linapprox.h"
 #include "st12_temp.h"
 
 static point_t t_sense_to_temp_celsius[] = {
-    {0, 0},         {30, 15106},   {87, 42130},   {198, 91840},
-    {343, 152422},  {500, 214252}, {602, 252958}, {801, 325892},
-    {1003, 397563}, {1298, 499461}};
+    {0, 0},
+    {30, 15106},
+    {87, 42130},
+    {198, 91840},
+    {343, 152422},
+    {500, 214252},
+    {602, 252958},
+    {801, 325892},
+    {1003, 397563},
+    {1298, 499461}};
 
 static point_t cj_sense_to_t_sense[] = {
   {225, 217},
@@ -53,10 +61,14 @@ static const size_t cj_sense_to_t_sense_size =
 static const size_t t_sense_to_temp_celsius_size =
     sizeof(t_sense_to_temp_celsius) / sizeof(point_t);
 
-int32_t temp_convert(const st12_adc_values_t *adc_values) {
+int32_t temp_convert(const st12_config_t *config,
+                     const st12_adc_values_t *adc_values) {
   int32_t cj_t_sense = linapprox(cj_sense_to_t_sense, cj_sense_to_t_sense_size,
                                  adc_values->cj_sense);
-  int32_t t_sense = adc_values->t_sense + cj_t_sense;
+  int32_t t_sense =
+      (adc_values->t_sense + cj_t_sense) * \
+      config->temp_scale / 1000 + config->temp_offset;
+  
   return linapprox(t_sense_to_temp_celsius, t_sense_to_temp_celsius_size,
                    t_sense);
 }

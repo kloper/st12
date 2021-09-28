@@ -28,13 +28,13 @@
 #include <libopencm3/stm32/rcc.h>
 
 #include "st12.h"
+#include "st12_config.h"
 #include "st12_adc.h"
 #include "st12_dma.h"
 #include "st12_gpio.h"
 #include "st12_ptimer.h"
 #include "st12_temp.h"
 #include "st12_i2c.h"
-#include "st12_config.h"
 #include "st12_display.h"
 #include "st12_rotary.h"
 #include "st12_current.h"
@@ -107,7 +107,7 @@ int main(void) {
         wait_state_count += count;
         if(wait_state_count >= config->measure_period_width) {
           wait_state_count = 0;
-          temp = temp_convert(&adc_state);
+          temp = temp_convert(config, &adc_state);
           //temp = (prev_count % 100) * 1000;
           if(temp <= config->target_temperature) {            
             gpio_heater_control(1);
