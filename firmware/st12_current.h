@@ -23,7 +23,8 @@
 
 #pragma once
 
-extern int32_t current_convert(const st12_adc_values_t *adc_values);
+extern int32_t current_convert(const st12_config_t *config,
+                               const st12_adc_values_t *adc_values);
 
 /* 
  * end of file

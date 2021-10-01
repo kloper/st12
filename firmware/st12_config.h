@@ -32,6 +32,8 @@ typedef struct _st12_config {
   uint32_t measure_period_width;
   uint32_t temp_scale;
   int32_t temp_offset;
+  uint32_t current_scale;
+  int32_t current_offset;
 } st12_config_t;
 
 const st12_config_t *config_get(void);
@@ -42,6 +44,8 @@ void config_set_temperature_scale(uint32_t scale);
 void config_set_temperature_offset(int32_t offset);
 void config_set_overshoot_period_width(uint32_t width);
 void config_set_measure_period_width(uint32_t width);
+void config_set_current_scale(uint32_t scale);
+void config_set_current_offset(int32_t offset);
 
 
 /* 

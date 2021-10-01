@@ -72,10 +72,11 @@ int main(void) {
   uint32_t current = 0;
   int32_t rotary_counter = 0;
   char buffer[40];
+
   
   while (1) {
     if((idle_state_count == 0 || wait_state_count == 0) &&
-       print_count++ % 3000 == 0 ) {
+       print_count++ % 2000 == 0 ) {      
       display_ctrl(1, 0, 0);
       snprintf(buffer, sizeof(buffer),
                "\f  %03ld [%03ld]\n  %1ld.%1ldA",               
@@ -91,16 +92,15 @@ int main(void) {
     count = adc_state.count - prev_count;
     prev_count = adc_state.count;
 
-    
+    current = current_convert(config, &adc_state);
+        
     switch(state) {
       case STATE_IDLE: {
         idle_state_count += count;
         if(idle_state_count >= config->overshoot_period_width) {
           idle_state_count = 0;
+          gpio_heater_control(0);          
           state = STATE_MEASURE_WAIT;
-          gpio_heater_control(0);
-        } else {
-          current = current_convert(&adc_state);
         }
       } break;
       case STATE_MEASURE_WAIT: {
@@ -108,10 +108,8 @@ int main(void) {
         if(wait_state_count >= config->measure_period_width) {
           wait_state_count = 0;
           temp = temp_convert(config, &adc_state);
-          //temp = (prev_count % 100) * 1000;
           if(temp <= config->target_temperature) {            
             gpio_heater_control(1);
-            //gpio_heater_control(0);
             state = STATE_IDLE;                      
           }
         }

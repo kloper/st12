@@ -24,10 +24,13 @@
 #include <stdint.h>
 
 #include "st12.h"
+#include "st12_config.h"
 #include "st12_current.h"
 
-int32_t current_convert(const st12_adc_values_t *adc_values) {
-  return 3509 * adc_values->i_sense / 4096;
+int32_t current_convert(const st12_config_t *config,
+                        const st12_adc_values_t *adc_values) {
+  return (adc_values->i_sense * config->current_scale +
+          config->current_offset) / 4096;
 }
 
 /* 

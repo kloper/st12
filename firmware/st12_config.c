@@ -62,6 +62,9 @@ static void config_default(void) {
                               // by 0.840 before temperature conversion
   g_config->temp_offset = 8; // offset ADC clicks before
                              // temperature conversion
+  g_config->current_scale = 4000; // multiply ADC clicks (corresponding to mV)
+                                  // before current conversion
+  g_config->current_offset = 0; // offset ADC clicks before current conversion
   g_config->crc = config_get_crc();
 }
 
@@ -162,6 +165,17 @@ void config_set_measure_period_width(uint32_t width) {
   config_write_uint32(offsetof(st12_config_t, measure_period_width));
 }
 
+void config_set_current_scale(uint32_t scale) {
+  g_config->current_scale = scale;
+  g_config->crc = config_get_crc();
+  config_write_uint32(offsetof(st12_config_t, current_scale));
+}
+
+void config_set_current_offset(int32_t offset) {
+  g_config->current_offset = offset;
+  g_config->crc = config_get_crc();
+  config_write_uint32(offsetof(st12_config_t, current_offset));
+}
 
 /* 
  * end of file
