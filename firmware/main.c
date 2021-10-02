@@ -38,6 +38,7 @@
 #include "st12_display.h"
 #include "st12_rotary.h"
 #include "st12_current.h"
+#include "st12_shake.h"
 
 typedef enum _main_loop_state {
   STATE_IDLE,
@@ -56,7 +57,7 @@ int main(void) {
   rotary_init();
   periodic_timer_init();
   config_init();
-  
+
   config = config_get();
   
   adc_start_conversion_regular(ADC1);
@@ -70,6 +71,7 @@ int main(void) {
   uint32_t count = 0;
   int32_t temp = 0;
   uint32_t current = 0;
+  uint32_t shake = 0;
   int32_t rotary_counter = 0;
   char buffer[40];
 
@@ -79,10 +81,11 @@ int main(void) {
        print_count++ % 2000 == 0 ) {      
       display_ctrl(1, 0, 0);
       snprintf(buffer, sizeof(buffer),
-               "\f  %03ld [%03ld]\n  %1ld.%1ldA",               
+               "\f  %03ld [%03ld]\n  %1ld.%1ldA  %lu",               
                temp / 1000,
                config->target_temperature / 1000,
-               current / 1000, (current % 1000) / 100 );
+               current / 1000, (current % 1000) / 100,
+               shake);
       
       display_print(buffer);
     }
@@ -93,7 +96,8 @@ int main(void) {
     prev_count = adc_state.count;
 
     current = current_convert(config, &adc_state);
-        
+    shake = shake_get_counter();
+    
     switch(state) {
       case STATE_IDLE: {
         idle_state_count += count;

@@ -20,6 +20,7 @@ CFILES = \
  st12_display.c \
  st12_rotary.c \
  st12_current.c \
+ st12_shake.c \
  main.c
 
 OPT = -g -O0

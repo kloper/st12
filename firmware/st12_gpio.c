@@ -29,10 +29,16 @@
 #include "st12.h"
 #include "st12_gpio.h"
 #include "st12_rotary.h"
+#include "st12_shake.h"
 
 void exti4_15_isr(void) {
   rotary_update_state();
   exti_reset_request(EXTI5 | EXTI6 | EXTI7);
+}
+
+void exti2_3_isr(void) {
+  shake_update_state();
+  exti_reset_request(EXTI2);
 }
 
 void gpio_init(void) {
@@ -46,12 +52,14 @@ void gpio_init(void) {
   
   gpio_mode_setup(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO4);
   gpio_mode_setup(GPIOA, GPIO_MODE_INPUT,
-                  GPIO_PUPD_NONE, GPIO5 | GPIO6 | GPIO7);
+                  GPIO_PUPD_NONE, GPIO2 | GPIO5 | GPIO6 | GPIO7);
 
   nvic_enable_irq(NVIC_EXTI4_15_IRQ);
+  nvic_enable_irq(NVIC_EXTI2_3_IRQ);
   exti_set_trigger(EXTI5 | EXTI6 | EXTI7, EXTI_TRIGGER_FALLING);
-  exti_select_source(EXTI5 | EXTI6 | EXTI7, GPIOA);
-  exti_enable_request(EXTI5 | EXTI6 | EXTI7);
+  exti_set_trigger(EXTI2, EXTI_TRIGGER_BOTH);
+  exti_select_source(EXTI2 | EXTI5 | EXTI6 | EXTI7, GPIOA);
+  exti_enable_request(EXTI2 | EXTI5 | EXTI6 | EXTI7);
 }
 
 void gpio_heater_control(uint8_t is_on) {
