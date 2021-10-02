@@ -23,7 +23,7 @@
 
 #pragma once
 
-extern void display_ctrl(int display_on, int cursor_on, int blink_on);
+extern int display_ctrl(int display_on, int cursor_on, int blink_on);
 extern void display_print(char *str);
 
 /* 

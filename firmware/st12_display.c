@@ -76,17 +76,18 @@ static uint8_t crc8(uint8_t *ptr, uint16_t size)
    return crc;
 }
 
-static void query(pato_packet_t *request, pato_packet_t *reply) {
-  i2c_send(PATO_I2C_ADDR, (uint8_t*)request, sizeof(pato_packet_t), 1);
+static int query(pato_packet_t *request) {
+  int rc = i2c_send(PATO_I2C_ADDR,
+                    (uint8_t*)request,
+                    sizeof(pato_packet_t),
+                    1);
   for(int i = 0; i < 1000; i++);
-  i2c_recv(PATO_I2C_ADDR, (uint8_t*)reply, sizeof(pato_packet_t)); 
-  for(int i = 0; i < 1000; i++);
+  return rc;
 }
 
-void display_ctrl(int display_on, int cursor_on, int blink_on) {
+int display_ctrl(int display_on, int cursor_on, int blink_on) {
   pato_packet_t request = {0};
-  pato_packet_t reply = {0};
-
+  
   request.cmd = PATO_CMD_DIRECT;
   request.data0 = HD44780_CMD_DISPLAY;
   request.data1 = 0x8 |
@@ -96,21 +97,23 @@ void display_ctrl(int display_on, int cursor_on, int blink_on) {
   request.crc = crc8((uint8_t*)&request, 3);
   request.zero = 0;
 
-  query(&request, &reply);
+  return query(&request);
 }
 
 void display_print(char *str) {
   int len = strlen(str);
   pato_packet_t request = {0};
-  pato_packet_t reply = {0};
-
+  int rc;
+  
   request.cmd = PATO_CMD_PRINT_SETADDR;
   request.data0 = 0;
   request.data1 = 0;
   request.crc = crc8((uint8_t*)&request, 3);
   request.zero = 0;
 
-  query(&request, &reply);
+  rc = query(&request);
+  if(!rc)
+    return;
   
   while(1) {
     request.cmd = PATO_CMD_PRINT_PUT;
@@ -119,7 +122,9 @@ void display_print(char *str) {
     request.crc = crc8((uint8_t*)&request, 3);
     request.zero = 0;
 
-    query(&request, &reply);
+    rc = query(&request);
+    if(!rc)
+      return;
     
     if(*str == 0)
       break;
@@ -131,7 +136,7 @@ void display_print(char *str) {
   request.crc = crc8((uint8_t*)&request, 3);
   request.zero = 0;
 
-  query(&request, &reply);
+  query(&request);  
 }
 
 /* 
