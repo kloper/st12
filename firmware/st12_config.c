@@ -55,6 +55,7 @@ static uint32_t config_get_crc(void) {
 }
 
 static void config_default(void) {
+  g_config->version = CONFIG_VERSION;
   g_config->target_temperature = 100000; // Milli-Celsius
   g_config->overshoot_period_width = 300; // milliseconds (periodic timer period)
   g_config->measure_period_width = 50; // milliseconds (periodic timer period)

@@ -25,8 +25,11 @@
 
 #define FLASH_ADDR(addr) ((((addr) & 0xff) << 8) | (((addr) & 0xff00) >> 8))
 
+#define CONFIG_VERSION 0x20211002
+
 typedef struct _st12_config {
   uint32_t crc;
+  uint32_t version;
   int32_t target_temperature;
   uint32_t overshoot_period_width;
   uint32_t measure_period_width;
