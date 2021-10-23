@@ -24,16 +24,31 @@
 #include <libopencm3/stm32/timer.h>
 
 #include "st12.h"
+#include "st12_config.h"
 #include "st12_shake.h"
+#include "st12_ptimer.h"
 
+static uint32_t g_last_shake_timestamp = 0;
 static uint32_t g_shake_counter = 0;
 
-uint32_t shake_get_counter(void) {
-  return g_shake_counter;
-}
 
 void shake_update_state(void) {
+  g_last_shake_timestamp = periodic_timer_get_count();
   g_shake_counter++;
+}
+
+int32_t shake_get_temperature(const st12_config_t *config, int *is_idle) {
+  uint32_t timestamp = periodic_timer_get_count();
+  if(g_last_shake_timestamp == 0)
+    g_last_shake_timestamp = timestamp;
+  
+  if(!g_last_shake_timestamp ||
+     timestamp - g_last_shake_timestamp < config->idle_timeout) {
+    *is_idle = 0;
+    return config->target_temperature;
+  }
+  *is_idle = 1;
+  return MIN(config->idle_temperature, config->target_temperature);
 }
 
 /* 

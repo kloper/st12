@@ -41,7 +41,7 @@
 #include "st12_shake.h"
 
 typedef enum _main_loop_state {
-  STATE_IDLE,
+  STATE_HEATING,
   STATE_MEASURE_WAIT  
 } main_loop_state_t;
 
@@ -63,7 +63,7 @@ int main(void) {
   adc_start_conversion_regular(ADC1);
 
   st12_adc_values_t adc_state = {0};
-  main_loop_state_t state = STATE_IDLE;
+  main_loop_state_t state = STATE_HEATING;
   uint32_t idle_state_count = 0;
   uint32_t wait_state_count = 0;
   uint32_t print_count = 0;
@@ -71,21 +71,21 @@ int main(void) {
   uint32_t count = 0;
   int32_t temp = 0;
   uint32_t current = 0;
-  uint32_t shake = 0;
   int32_t rotary_counter = 0;
   char buffer[40];
-
+  int is_idle = 0;
   
   while (1) {
     if((idle_state_count == 0 || wait_state_count == 0) &&
        print_count++ % 2000 == 0 ) {      
       display_ctrl(1, 0, 0);
       snprintf(buffer, sizeof(buffer),
-               "\f  %03ld [%03ld]\n  %1ld.%1ldA  %lu",               
+               "\f%03ldC [%03ldC] %s\n%1ld.%1ldA\n", 
                temp / 1000,
                config->target_temperature / 1000,
-               current / 1000, (current % 1000) / 100,
-               shake);
+               is_idle ? "Idle" : "",
+               current / 1000,
+               (current % 1000) / 100);
       
       display_print(buffer);
     }
@@ -96,10 +96,9 @@ int main(void) {
     prev_count = adc_state.count;
 
     current = current_convert(config, &adc_state);
-    shake = shake_get_counter();
     
     switch(state) {
-      case STATE_IDLE: {
+      case STATE_HEATING: {
         idle_state_count += count;
         if(idle_state_count >= config->overshoot_period_width) {
           idle_state_count = 0;
@@ -112,20 +111,20 @@ int main(void) {
         if(wait_state_count >= config->measure_period_width) {
           wait_state_count = 0;
           temp = temp_convert(config, &adc_state);
-          if(temp <= config->target_temperature) {            
+          if(temp <= shake_get_temperature(config, &is_idle)) {            
             gpio_heater_control(1);
-            state = STATE_IDLE;                      
+            state = STATE_HEATING;                      
           }
         }
       } break;        
     }
 
     int32_t counter = rotary_get_counter();
-    if(counter != rotary_counter) {
+    if(counter != rotary_counter) {      
       config_set_target_temperature(
           config->target_temperature + (counter - rotary_counter) * 500
       );
-      rotary_counter = counter;
+      rotary_counter = counter; 
     }
     
     __asm__("wfi");

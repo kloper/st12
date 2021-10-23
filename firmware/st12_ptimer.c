@@ -62,6 +62,9 @@ void periodic_timer_get_state(st12_adc_values_t *state) {
   timer_enable_irq(TIM14, TIM_DIER_UIE);
 }
 
+uint32_t periodic_timer_get_count(void) {
+  return g_timer_count;
+}
 
 /* 
  * end of file

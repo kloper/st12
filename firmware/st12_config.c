@@ -66,6 +66,8 @@ static void config_default(void) {
   g_config->current_scale = 4000; // multiply ADC clicks (corresponding to mV)
                                   // before current conversion
   g_config->current_offset = 0; // offset ADC clicks before current conversion
+  g_config->idle_timeout = 20000; // 20 Seconds in ticks of periodic timer
+  g_config->idle_temperature = 120000; // 120C when idle
   g_config->crc = config_get_crc();
 }
 
@@ -176,6 +178,18 @@ void config_set_current_offset(int32_t offset) {
   g_config->current_offset = offset;
   g_config->crc = config_get_crc();
   config_write_uint32(offsetof(st12_config_t, current_offset));
+}
+
+void config_set_idle_temperature(int32_t temp) {
+  g_config->idle_temperature = temp;
+  g_config->crc = config_get_crc();
+  config_write_uint32(offsetof(st12_config_t, idle_temperature));
+}
+
+void config_set_idle_timeout(uint32_t timeout) {
+  g_config->idle_timeout = timeout;
+  g_config->crc = config_get_crc();
+  config_write_uint32(offsetof(st12_config_t, idle_timeout));
 }
 
 /* 

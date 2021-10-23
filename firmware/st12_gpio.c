@@ -27,6 +27,7 @@
 #include <libopencm3/stm32/exti.h>
 
 #include "st12.h"
+#include "st12_config.h"
 #include "st12_gpio.h"
 #include "st12_rotary.h"
 #include "st12_shake.h"
