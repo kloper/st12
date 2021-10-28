@@ -23,8 +23,8 @@
 
 #pragma once
 
-extern int32_t temp_convert(const st12_config_t *config,
-                            const st12_adc_values_t *adc_values);
+int32_t temp_convert(const st12_config_t *config,
+                     const st12_adc_values_t *adc_values);
 
 /* 
  * end of file

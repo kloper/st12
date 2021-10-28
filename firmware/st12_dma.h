@@ -23,7 +23,7 @@
 
 #pragma once
 
-extern void dma_init(void);
+void dma_init(void);
 
 /* 
  * end of file

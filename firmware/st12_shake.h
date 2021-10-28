@@ -23,9 +23,8 @@
 
 #pragma once
 
-extern void shake_update_state(void);
-extern int32_t shake_get_temperature(const st12_config_t *config,
-                                     int *is_idle);
+void shake_update_state(void);
+int32_t shake_get_temperature(const st12_config_t *config, int *is_idle);
 
 /* 
  * end of file

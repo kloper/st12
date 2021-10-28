@@ -23,10 +23,10 @@
 
 #pragma once
 
-extern void gpio_init(void);
-extern void gpio_heater_control(uint8_t is_on);
-extern void gpio_heater_toggle(void);
-extern uint16_t gpio_get_rotary_state(void);
+void gpio_init(void);
+void gpio_heater_control(uint8_t is_on);
+void gpio_heater_toggle(void);
+uint16_t gpio_get_rotary_state(void);
 
 /* 
  * end of file

@@ -44,8 +44,7 @@ typedef struct _point {
   int32_t y;
 } point_t;
 
-extern int32_t linapprox(const point_t *const values, const int size,
-                         int32_t x);
+int32_t linapprox(const point_t *const values, const int size, int32_t x);
 
 /*
  * end of file

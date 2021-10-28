@@ -23,9 +23,9 @@
 
 #pragma once
 
-extern void periodic_timer_init(void);
-extern void periodic_timer_get_state(st12_adc_values_t *state);
-extern uint32_t periodic_timer_get_count(void);
+void periodic_timer_init(void);
+void periodic_timer_get_state(st12_adc_values_t *state);
+uint32_t periodic_timer_get_count(void);
 
 /*
  * end of file

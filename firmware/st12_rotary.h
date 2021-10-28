@@ -23,10 +23,10 @@
 
 #pragma once
 
-extern void rotary_init(void);
-extern void rotary_update_state(void);
-extern int32_t rotary_get_counter(void);
-extern uint32_t rotary_get_press_counter(void);
+void rotary_init(void);
+void rotary_update_state(void);
+int32_t rotary_get_counter(void);
+uint32_t rotary_get_press_counter(void);
 
 /* 
  * end of file

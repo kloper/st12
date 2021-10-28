@@ -23,8 +23,8 @@
 
 #pragma once
 
-extern int display_ctrl(int display_on, int cursor_on, int blink_on);
-extern void display_print(char *str);
+int display_ctrl(int display_on, int cursor_on, int blink_on);
+void display_print(char *str);
 
 /* 
  * end of file
