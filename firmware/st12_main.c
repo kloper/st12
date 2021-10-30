@@ -76,14 +76,13 @@ int main(void) {
   int is_idle = 0;
   
   while (1) {
-    if((idle_state_count == 0 || wait_state_count == 0) &&
-       print_count++ % 2000 == 0 ) {      
+    if( print_count++ % 2000 == 0 ) {      
       display_ctrl(1, 0, 0);
       snprintf(buffer, sizeof(buffer),
-               "\f%03ldC [%03ldC] %s\n%1ld.%1ldA\n", 
+               "\f%s%03ld [%03ld] %1ld.%1ldA",
+               is_idle ? "I" : " ",               
                temp / 1000,
                config->target_temperature / 1000,
-               is_idle ? "Idle" : "",
                current / 1000,
                (current % 1000) / 100);
       
