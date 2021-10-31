@@ -25,6 +25,7 @@
 
 #define TERM_FRAME_MAX_CHILDREN 16
 #define TERM_COUNTER_MAX_WIDTH 8
+#define TERM_LABEL_MAX_WIDTH 5
 
 typedef enum _term_event { PRESS, FORWARD, BACKWARD, FOCUS, TICK } term_event_t;
 
@@ -55,6 +56,28 @@ typedef struct _term_label {
   const char *text;
 } term_label_t;
 
+typedef struct _term_int_label {
+  term_label_t base;
+  int value;
+  char text[TERM_LABEL_MAX_WIDTH];
+} term_int_label_t;
+
+typedef struct _term_float_label {
+  term_label_t base;
+  int value;
+  int divider;
+  char text[TERM_LABEL_MAX_WIDTH];
+} term_float_label_t;
+
+typedef struct _term_st12_temp_label {
+  term_widget_t base;
+  int is_idle;
+  const st12_config_t *config;
+  int32_t temperature;
+  uint32_t current;
+  char text[TERM_LABEL_MAX_WIDTH * 4];
+} term_st12_temp_label_t;
+
 typedef struct _term_button {
   term_widget_t base;
   const char *text;
@@ -84,21 +107,27 @@ typedef struct _term_frame {
   uint8_t focus;
 } term_frame_t;
 
-extern void term_label_init(term_label_t *widget, const char *text);
-extern void term_frame_init(term_frame_t *frame);
-extern void term_button_init(term_button_t *button, const char *text,
-                             term_action_callback_t press_callback,
-                             uint8_t *user_data);
-extern int term_frame_add_child(term_frame_t *frame, term_widget_t *widget,
-                                uint8_t focus);
-extern uint32_t term_frame_dispatch(term_frame_t *frame, term_event_t event,
-                                    uint32_t event_data);
-extern void term_frame_render(term_frame_t *frame);
-extern void term_frame_reset(term_frame_t *frame);
-extern void term_counter_init(term_counter_t *counter,
-                              term_action_callback_t assign_action,
-                              uint32_t min_value, uint32_t max_value,
-                              uint8_t disp_width, uint8_t *user_data);
-extern void term_grabber_init(term_grabber_t *grabber, const char *text,
-                              term_action_callback_t press_callback,
-                              uint8_t *user_data);
+void term_label_init(term_label_t *widget, const char *text);
+void term_frame_init(term_frame_t *frame);
+void term_button_init(term_button_t *button, const char *text,
+                      term_action_callback_t press_callback,
+                      uint8_t *user_data);
+int term_frame_add_child(term_frame_t *frame, term_widget_t *widget,
+                         uint8_t focus);
+uint32_t term_frame_dispatch(term_frame_t *frame, term_event_t event,
+                             uint32_t event_data);
+void term_frame_render(term_frame_t *frame);
+void term_frame_reset(term_frame_t *frame);
+void term_counter_init(term_counter_t *counter,
+                       term_action_callback_t assign_action, uint32_t min_value,
+                       uint32_t max_value, uint8_t disp_width,
+                       uint8_t *user_data);
+void term_grabber_init(term_grabber_t *grabber, const char *text,
+                       term_action_callback_t press_callback,
+                       uint8_t *user_data);
+void term_int_label_init(term_int_label_t *widget, const char *format,
+                         int value);
+void term_float_label_init(term_float_label_t *widget, const char *format,
+                           int value, int divider);
+void term_st12_temp_label_init(term_st12_temp_label_t *widget,
+                               const st12_config_t *config);

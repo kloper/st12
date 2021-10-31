@@ -39,6 +39,7 @@
 #include "st12_rotary.h"
 #include "st12_current.h"
 #include "st12_shake.h"
+#include "st12_term.h"
 
 typedef enum _main_loop_state {
   STATE_HEATING,
@@ -69,24 +70,20 @@ int main(void) {
   uint32_t print_count = 0;
   uint32_t prev_count = 0;
   uint32_t count = 0;
-  int32_t temp = 0;
-  uint32_t current = 0;
   int32_t rotary_counter = 0;
-  char buffer[40];
-  int is_idle = 0;
+
+  term_st12_temp_label_t st12_temp_label;
+  term_frame_t root_frame;
+  
+  term_st12_temp_label_init(&st12_temp_label, config);
+  term_frame_init(&root_frame);
+
+  term_frame_add_child(&root_frame, (term_widget_t*)&st12_temp_label, 1);
   
   while (1) {
     if( print_count++ % 2000 == 0 ) {      
       display_ctrl(1, 0, 0);
-      snprintf(buffer, sizeof(buffer),
-               "\f%s%03ld [%03ld] %1ld.%1ldA",
-               is_idle ? "I" : " ",               
-               temp / 1000,
-               config->target_temperature / 1000,
-               current / 1000,
-               (current % 1000) / 100);
-      
-      display_print(buffer);
+      term_frame_render(&root_frame);
     }
     
     periodic_timer_get_state(&adc_state);
@@ -94,7 +91,7 @@ int main(void) {
     count = adc_state.count - prev_count;
     prev_count = adc_state.count;
 
-    current = current_convert(config, &adc_state);
+    st12_temp_label.current = current_convert(config, &adc_state);
     
     switch(state) {
       case STATE_HEATING: {
@@ -109,8 +106,10 @@ int main(void) {
         wait_state_count += count;
         if(wait_state_count >= config->measure_period_width) {
           wait_state_count = 0;
-          temp = temp_convert(config, &adc_state);
-          if(temp <= shake_get_temperature(config, &is_idle)) {            
+          st12_temp_label.temperature = temp_convert(config, &adc_state);
+          if(st12_temp_label.temperature <=
+             shake_get_temperature(config, &st12_temp_label.is_idle))
+          {            
             gpio_heater_control(1);
             state = STATE_HEATING;                      
           }
@@ -119,10 +118,14 @@ int main(void) {
     }
 
     int32_t counter = rotary_get_counter();
-    if(counter != rotary_counter) {      
-      config_set_target_temperature(
-          config->target_temperature + (counter - rotary_counter) * 500
-      );
+
+    if(counter < rotary_counter) {
+      term_frame_dispatch(&root_frame, BACKWARD, rotary_counter - counter);
+      rotary_counter = counter; 
+    }
+
+    if(counter > rotary_counter) {
+      term_frame_dispatch(&root_frame, FORWARD, counter - rotary_counter);
       rotary_counter = counter; 
     }
     
