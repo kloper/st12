@@ -1,3 +1,13 @@
+* Unsorted Tasks
+
+** TODO Disable station on overcurrent
+   [2021-10-31 Sun 22:40]
+   [[file:~/w/st12/firmware/st12_term.h::uint32_t current;]]
+
+** TODO Move target temp increment to config
+   [2021-10-31 Sun 22:51]
+   [[file:~/w/st12/firmware/st12_term.c::config_set_target_temperature(config->target_temperature + 500);]]
+
 * Notes for ST12 development
 
 ** Firmware work plan
