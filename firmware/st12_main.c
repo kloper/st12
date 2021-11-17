@@ -40,6 +40,7 @@
 #include "st12_current.h"
 #include "st12_shake.h"
 #include "st12_term.h"
+#include "st12_menu.h"
 
 typedef enum _main_loop_state {
   STATE_HEATING,
@@ -71,14 +72,18 @@ int main(void) {
   uint32_t prev_count = 0;
   uint32_t count = 0;
   int32_t rotary_counter = 0;
+  uint32_t rotary_press_counter = 0;
 
   term_st12_temp_label_t st12_temp_label;
+  term_st12_menu_t st12_menu;  
   term_frame_t root_frame;
   
   term_st12_temp_label_init(&st12_temp_label, config);
+  term_st12_menu_init(&st12_menu);
   term_frame_init(&root_frame);
 
   term_frame_add_child(&root_frame, (term_widget_t*)&st12_temp_label, 1);
+  term_frame_add_child(&root_frame, (term_widget_t*)&st12_menu, 0);
   
   while (1) {
     if( print_count++ % 2000 == 0 ) {      
@@ -127,6 +132,13 @@ int main(void) {
     if(counter > rotary_counter) {
       term_frame_dispatch(&root_frame, FORWARD, counter - rotary_counter);
       rotary_counter = counter; 
+    }
+    
+    uint32_t press_counter = rotary_get_press_counter();
+    if(press_counter > rotary_press_counter) {
+      term_frame_dispatch(&root_frame, PRESS,
+                          press_counter - rotary_press_counter);
+      rotary_press_counter = press_counter; 
     }
     
     __asm__("wfi");
