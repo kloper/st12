@@ -126,8 +126,17 @@ void display_print(char *str) {
     if(!rc)
       return;
     
-    if(*str == 0)
+    if(*str == 0) {
+      if(request.data1 != 0) {
+        request.cmd = PATO_CMD_PRINT_PUT;
+        request.data0 = 0;    
+        request.data1 = 0;
+        request.crc = crc8((uint8_t*)&request, 3);
+        request.zero = 0;
+        query(&request);
+      }
       break;
+    }
   }
 
   request.cmd = PATO_CMD_PRINT_COMMIT;
