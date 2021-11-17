@@ -94,7 +94,7 @@ void config_init() {
            (uint8_t*)&g_config_packet.config,
            sizeof(g_config_packet.config));
   uint32_t crc = config_get_crc();
-  if(crc != g_config->crc) {
+  if(crc != g_config->crc || g_config->version != CONFIG_VERSION) {
     config_default();
     config_save();
   }

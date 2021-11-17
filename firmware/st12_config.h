@@ -25,7 +25,7 @@
 
 #define FLASH_ADDR(addr) ((((addr) & 0xff) << 8) | (((addr) & 0xff00) >> 8))
 
-#define CONFIG_VERSION 0x20211002
+#define CONFIG_VERSION 0x20211008
 
 typedef struct _st12_config {
   uint32_t crc;
@@ -53,7 +53,6 @@ void config_set_current_scale(uint32_t scale);
 void config_set_current_offset(int32_t offset);
 void config_set_idle_temperature(int32_t temp);
 void config_set_idle_timeout(uint32_t timeout);
-
 
 /* 
  * end of file
