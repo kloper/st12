@@ -107,6 +107,7 @@ typedef struct _term_frame {
   uint8_t focus;
 } term_frame_t;
 
+void term_widget_init(term_widget_t *widget);
 void term_label_init(term_label_t *widget, const char *text);
 void term_frame_init(term_frame_t *frame);
 void term_button_init(term_button_t *button, const char *text,

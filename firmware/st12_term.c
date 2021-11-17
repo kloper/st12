@@ -60,7 +60,7 @@ static uint32_t term_widget_dispatch(term_widget_t *widget, term_event_t event,
   return 0;
 }
 
-static void term_widget_init(term_widget_t *widget) {
+void term_widget_init(term_widget_t *widget) {
   widget->on_event = term_widget_dispatch;
   widget->on_press = NULL;
   widget->on_forward = NULL;
@@ -85,16 +85,13 @@ void term_label_init(term_label_t *widget, const char *text) {
 static const char *term_int_label_render(term_widget_t *widget) {
   term_int_label_t *label = (term_int_label_t *)widget;
 
-  snprintf(label->text, sizeof(label->text),
-           label->base.text, label->value);
-  
+  snprintf(label->text, sizeof(label->text), label->base.text, label->value);
+
   return label->text;
 }
 
-void term_int_label_init(term_int_label_t *widget,
-                         const char *format,
-                         int value)
-{
+void term_int_label_init(term_int_label_t *widget, const char *format,
+                         int value) {
   term_label_init(&widget->base, format);
   widget->base.base.render = term_int_label_render;
   widget->value = value;
@@ -103,19 +100,14 @@ void term_int_label_init(term_int_label_t *widget,
 static const char *term_float_label_render(term_widget_t *widget) {
   term_float_label_t *label = (term_float_label_t *)widget;
 
-  snprintf(label->text, sizeof(label->text),
-           label->base.text,
-           label->value / label->divider,
-           label->value % label->divider);
-  
+  snprintf(label->text, sizeof(label->text), label->base.text,
+           label->value / label->divider, label->value % label->divider);
+
   return label->text;
 }
 
-void term_float_label_init(term_float_label_t *widget,
-                           const char *format,
-                           int value,
-                           int divider)
-{
+void term_float_label_init(term_float_label_t *widget, const char *format,
+                           int value, int divider) {
   term_label_init(&widget->base, format);
   widget->base.base.render = term_float_label_render;
   widget->value = value;
@@ -123,8 +115,7 @@ void term_float_label_init(term_float_label_t *widget,
 }
 
 static uint32_t term_st12_temp_label_forward(term_widget_t *widget,
-                                             uint32_t event_data)
-{
+                                             uint32_t event_data) {
   term_st12_temp_label_t *label = (term_st12_temp_label_t *)widget;
 
   config_set_target_temperature(label->config->target_temperature +
@@ -134,8 +125,7 @@ static uint32_t term_st12_temp_label_forward(term_widget_t *widget,
 }
 
 static uint32_t term_st12_temp_label_backward(term_widget_t *widget,
-                                              uint32_t event_data)
-{
+                                              uint32_t event_data) {
   term_st12_temp_label_t *label = (term_st12_temp_label_t *)widget;
 
   config_set_target_temperature(label->config->target_temperature -
@@ -144,27 +134,32 @@ static uint32_t term_st12_temp_label_backward(term_widget_t *widget,
   return 1;
 }
 
+static uint32_t term_st12_temp_label_focus(term_widget_t *widget,
+                                           uint32_t event_data) {
+  (void)widget;
+  (void)event_data;
+  
+  return 1;
+}
+
 static const char *term_st12_temp_label_render(term_widget_t *widget) {
   term_st12_temp_label_t *label = (term_st12_temp_label_t *)widget;
 
-  snprintf(label->text, sizeof(label->text),
-           "\f%s%03ld [%03ld] %1ld.%1ldA",
-           label->is_idle ? "I" : " ",               
-           label->temperature / 1000,
-           label->config->target_temperature / 1000,
-           label->current / 1000,
+  snprintf(label->text, sizeof(label->text), "\f%s%03ld [%03ld] %1ld.%1ldA",
+           label->is_idle ? "I" : " ", label->temperature / 1000,
+           label->config->target_temperature / 1000, label->current / 1000,
            (label->current % 1000) / 100);
-  
+
   return label->text;
 }
 
 void term_st12_temp_label_init(term_st12_temp_label_t *widget,
-                               const st12_config_t *config)
-{
+                               const st12_config_t *config) {
   term_widget_init(&widget->base);
   widget->base.render = term_st12_temp_label_render;
   widget->base.on_forward = term_st12_temp_label_forward;
   widget->base.on_backward = term_st12_temp_label_backward;
+  widget->base.on_focus = term_st12_temp_label_focus;
   widget->config = config;
   widget->temperature = 0;
   widget->current = 0;
@@ -364,6 +359,7 @@ uint32_t term_frame_dispatch(term_frame_t *frame, term_event_t event,
 
   while (1) {
     switch (event) {
+    case PRESS:
     case FORWARD:
       frame->focus++;
       if (frame->focus == frame->nchildren)
@@ -395,12 +391,15 @@ uint32_t term_frame_dispatch(term_frame_t *frame, term_event_t event,
 static char g_frame_buffer[40];
 
 void term_frame_render(term_frame_t *frame) {
-
+  int nchars = 0;
   for (int i = 0; i < frame->nchildren; i++) {
     term_widget_t *w = frame->children[i];
     if (w->render) {
-      snprintf(g_frame_buffer, sizeof(g_frame_buffer), "%s", w->render(w));
-      display_print(g_frame_buffer);
+      nchars += snprintf(g_frame_buffer + nchars,
+                         sizeof(g_frame_buffer) - nchars,
+                         "%s",
+                         w->render(w));
     }
   }
+  display_print(g_frame_buffer);
 }
