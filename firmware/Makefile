@@ -25,7 +25,7 @@ CFILES = \
  st12_menu.c \
  st12_main.c
 
-OPT = -g -Os
+OPT = -g -O1
 
 DEVICE = stm32f030F4
 
