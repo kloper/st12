@@ -145,11 +145,18 @@ static uint32_t term_st12_temp_label_focus(term_widget_t *widget,
 static const char *term_st12_temp_label_render(term_widget_t *widget) {
   term_st12_temp_label_t *label = (term_st12_temp_label_t *)widget;
 
-  snprintf(label->text, sizeof(label->text), "\f%s%03ld [%03ld] %1ld.%1ldA",
-           label->is_idle ? "I" : " ", label->temperature / 1000,
-           label->config->target_temperature / 1000, label->current / 1000,
-           (label->current % 1000) / 100);
-
+  if(!label->overcurrent) { 
+    snprintf(
+        label->text, sizeof(label->text), "\f%s%03d [%03d] %1u.%1uA",
+        label->is_idle ? "i" : " ",
+        (short)(label->temperature / 1000),
+        (short)(label->config->target_temperature / 1000),
+        (unsigned short)(label->current / 1000),
+        (unsigned short)((label->current % 1000) / 100)
+    );
+  } else {
+    snprintf(label->text, sizeof(label->text), "\fOvercurrent!");
+  }
   return label->text;
 }
 
@@ -163,6 +170,7 @@ void term_st12_temp_label_init(term_st12_temp_label_t *widget,
   widget->config = config;
   widget->temperature = 0;
   widget->current = 0;
+  widget->overcurrent = 0;
 }
 
 static const char *term_button_render(term_widget_t *widget) {

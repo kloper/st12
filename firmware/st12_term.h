@@ -75,7 +75,8 @@ typedef struct _term_st12_temp_label {
   const st12_config_t *config;
   int32_t temperature;
   uint32_t current;
-  char text[TERM_LABEL_MAX_WIDTH * 4];
+  int overcurrent;
+  char text[TERM_LABEL_MAX_WIDTH * 6];
 } term_st12_temp_label_t;
 
 typedef struct _term_button {

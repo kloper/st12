@@ -77,6 +77,7 @@ int main(void) {
   term_st12_temp_label_t st12_temp_label;
   term_st12_menu_t st12_menu;  
   term_frame_t root_frame;
+  int disable_heater = 0;
   
   term_st12_temp_label_init(&st12_temp_label, config);
   term_st12_menu_init(&st12_menu);
@@ -97,6 +98,13 @@ int main(void) {
     prev_count = adc_state.count;
 
     st12_temp_label.current = current_convert(config, &adc_state);
+
+    // overcurrent protection
+    if(st12_temp_label.current >= 2600) {
+      gpio_heater_control(0);          
+      disable_heater = 1;
+      st12_temp_label.overcurrent = 1;
+    }
     
     switch(state) {
       case STATE_HEATING: {
@@ -112,10 +120,12 @@ int main(void) {
         if(wait_state_count >= config->measure_period_width) {
           wait_state_count = 0;
           st12_temp_label.temperature = temp_convert(config, &adc_state);
-          if(st12_temp_label.temperature <=
+          if(!disable_heater &&
+             st12_temp_label.temperature <=
              shake_get_temperature(config, &st12_temp_label.is_idle))
           {            
             gpio_heater_control(1);
+            //gpio_heater_control(0);
             state = STATE_HEATING;                      
           }
         }
