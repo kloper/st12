@@ -1227,8 +1227,6 @@ F 3 "" H 2700 5900 50  0001 C CNN
 	1    2700 5900
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	2600 6250 2700 6250
 Text GLabel 3300 7100 2    50   Output ~ 0
 COLD_SENSE
 Wire Wire Line
@@ -1282,15 +1280,15 @@ $EndComp
 $Comp
 L Device:R R?
 U 1 1 60B0B0F6
-P 2450 6250
+P 2400 6400
 AR Path="/60B0B0F6" Ref="R?"  Part="1" 
 AR Path="/60AEC464/60B0B0F6" Ref="R208"  Part="1" 
-F 0 "R208" V 2350 6350 50  0000 R CNN
-F 1 "7.5K" V 2450 6350 50  0000 R CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2380 6250 50  0001 C CNN
-F 3 "~" H 2450 6250 50  0001 C CNN
-	1    2450 6250
-	0    -1   -1   0   
+F 0 "R208" V 2300 6500 50  0000 R CNN
+F 1 "7.5K" V 2400 6500 50  0000 R CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 2330 6400 50  0001 C CNN
+F 3 "~" H 2400 6400 50  0001 C CNN
+	1    2400 6400
+	1    0    0    -1  
 $EndComp
 $Comp
 L Device:C C?
@@ -1321,14 +1319,14 @@ $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 60A8DFE1
-P 2700 6650
+P 2550 6650
 AR Path="/60A8DFE1" Ref="#PWR?"  Part="1" 
 AR Path="/60AEC464/60A8DFE1" Ref="#PWR0215"  Part="1" 
-F 0 "#PWR0215" H 2700 6400 50  0001 C CNN
-F 1 "GND" V 2705 6522 50  0000 R CNN
-F 2 "" H 2700 6650 50  0001 C CNN
-F 3 "" H 2700 6650 50  0001 C CNN
-	1    2700 6650
+F 0 "#PWR0215" H 2550 6400 50  0001 C CNN
+F 1 "GND" V 2555 6522 50  0000 R CNN
+F 2 "" H 2550 6650 50  0001 C CNN
+F 3 "" H 2550 6650 50  0001 C CNN
+	1    2550 6650
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1612,4 +1610,16 @@ F 3 "" H 5450 4250 50  0001 C CNN
 	1    5450 4250
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	2300 6250 2400 6250
+Connection ~ 2400 6250
+Wire Wire Line
+	2400 6250 2700 6250
+Wire Wire Line
+	2700 6650 2550 6650
+Wire Wire Line
+	2400 6550 2400 6650
+Wire Wire Line
+	2400 6650 2550 6650
+Connection ~ 2550 6650
 $EndSCHEMATC
