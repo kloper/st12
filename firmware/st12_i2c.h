@@ -23,7 +23,14 @@
 
 #pragma once
 
-extern void i2c_init(void);
+void i2c_init(void);
+int i2c_send(const uint8_t addr,
+             const uint8_t *packet,
+             const uint8_t size,
+             const uint8_t send_stop);
+int i2c_recv(const uint8_t addr,
+             uint8_t *packet,
+             const uint8_t size);
 
 /* 
  * end of file

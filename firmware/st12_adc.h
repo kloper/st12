@@ -37,13 +37,13 @@
 
 #define ST12_ADC_NCHANNELS (ST12_ADC_VREF_INDEX + 1)
 
-extern void adc_init(void);
-extern void adc_update_collectors(void);
-extern void adc_update_values(void);
-extern volatile uint16_t *adc_get_raw_values(uint32_t *size);
-extern volatile int32_t *adc_get_values(uint32_t *size);
-extern void adc_get_state(st12_adc_values_t *state);
-extern void adc_clear_collectors(void);
+void adc_init(void);
+void adc_update_collectors(void);
+void adc_update_values(void);
+volatile uint16_t *adc_get_raw_values(uint32_t *size);
+volatile int32_t *adc_get_values(uint32_t *size);
+void adc_get_state(st12_adc_values_t *state);
+void adc_clear_collectors(void);
 /*
  * end of file
  */

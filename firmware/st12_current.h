@@ -17,14 +17,14 @@
  *
  * Copyright (c) 2021 Dimitry Kloper <kloper@users.sf.net> 
  *
- * st12_temp.h -- ST12 temperature calculations
+ * st12_current.h -- ST12 current calculations
  *
  */
 
 #pragma once
 
-int32_t temp_convert(const st12_config_t *config,
-                     const st12_adc_values_t *adc_values);
+int32_t current_convert(const st12_config_t *config,
+                        const st12_adc_values_t *adc_values);
 
 /* 
  * end of file

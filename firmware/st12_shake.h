@@ -17,14 +17,14 @@
  *
  * Copyright (c) 2021 Dimitry Kloper <kloper@users.sf.net> 
  *
- * st12_temp.h -- ST12 temperature calculations
+ * st12_shake.h -- Shake sensor on base of TIM15 edge counter
  *
  */
 
 #pragma once
 
-int32_t temp_convert(const st12_config_t *config,
-                     const st12_adc_values_t *adc_values);
+void shake_update_state(void);
+int32_t shake_get_temperature(const st12_config_t *config, int *is_idle);
 
 /* 
  * end of file

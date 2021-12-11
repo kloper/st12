@@ -23,20 +23,36 @@
 
 #pragma once
 
+#define FLASH_ADDR(addr) ((((addr) & 0xff) << 8) | (((addr) & 0xff00) >> 8))
+
+#define CONFIG_VERSION 0x20211008
+
 typedef struct _st12_config {
   uint32_t crc;
+  uint32_t version;
   int32_t target_temperature;
   uint32_t overshoot_period_width;
   uint32_t measure_period_width;
+  uint32_t temp_scale;
+  int32_t temp_offset;
+  uint32_t current_scale;
+  int32_t current_offset;
+  uint32_t idle_timeout;
+  int32_t idle_temperature;
 } st12_config_t;
 
 const st12_config_t *config_get(void);
 void config_init(void);
 void config_save(void);
 void config_set_target_temperature(int32_t temp);
+void config_set_temperature_scale(uint32_t scale);
+void config_set_temperature_offset(int32_t offset);
 void config_set_overshoot_period_width(uint32_t width);
 void config_set_measure_period_width(uint32_t width);
-
+void config_set_current_scale(uint32_t scale);
+void config_set_current_offset(int32_t offset);
+void config_set_idle_temperature(int32_t temp);
+void config_set_idle_timeout(uint32_t timeout);
 
 /* 
  * end of file

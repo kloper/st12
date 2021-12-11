@@ -17,14 +17,21 @@
  *
  * Copyright (c) 2021 Dimitry Kloper <kloper@users.sf.net> 
  *
- * st12_temp.h -- ST12 temperature calculations
+ * st12_current.c -- ST12 current calculations
  *
  */
 
-#pragma once
+#include <stdint.h>
 
-int32_t temp_convert(const st12_config_t *config,
-                     const st12_adc_values_t *adc_values);
+#include "st12.h"
+#include "st12_config.h"
+#include "st12_current.h"
+
+int32_t current_convert(const st12_config_t *config,
+                        const st12_adc_values_t *adc_values) {
+  return (adc_values->i_sense * config->current_scale +
+          config->current_offset) / 4096;
+}
 
 /* 
  * end of file

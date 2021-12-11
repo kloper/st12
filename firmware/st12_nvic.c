@@ -59,10 +59,6 @@ void exti0_1_isr(void) {
   unexpected_exception_handler(EXTI0_1_ISR);
 }
 
-void exti2_3_isr(void) {
-  unexpected_exception_handler(EXTI2_3_ISR);
-}
-
 void tsc_isr(void) {
   unexpected_exception_handler(TSC_ISR);
 }

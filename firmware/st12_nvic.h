@@ -58,40 +58,40 @@
 #define NMI_ISR 33
 #define HARD_FAULT_ISR 34
 
-extern void wwdg_isr(void);
-extern void pvd_isr(void);
-extern void rtc_isr(void);
-extern void flash_isr(void);
-extern void rcc_isr(void);
-extern void exti0_1_isr(void);
-extern void exti2_3_isr(void);
-extern void exti4_15_isr(void);
-extern void tsc_isr(void);
-extern void dma1_channel1_isr(void);
-extern void dma1_channel2_3_dma2_channel1_2_isr(void);
-extern void dma1_channel4_7_dma2_channel3_5_isr(void);
-extern void adc_comp_isr(void);
-extern void tim1_brk_up_trg_com_isr(void);
-extern void tim1_cc_isr(void);
-extern void tim2_isr(void);
-extern void tim3_isr(void);
-extern void tim6_dac_isr(void);
-extern void tim7_isr(void);
-extern void tim14_isr(void);
-extern void tim15_isr(void);
-extern void tim16_isr(void);
-extern void tim17_isr(void);
-extern void i2c1_isr(void);
-extern void i2c2_isr(void);
-extern void spi1_isr(void);
-extern void spi2_isr(void);
-extern void usart1_isr(void);
-extern void usart2_isr(void);
-extern void usart3_4_isr(void);
-extern void cec_can_isr(void);
-extern void usb_isr(void);
-extern void nmi_handler(void);
-extern void hard_fault_handler(void);
+void wwdg_isr(void);
+void pvd_isr(void);
+void rtc_isr(void);
+void flash_isr(void);
+void rcc_isr(void);
+void exti0_1_isr(void);
+void exti2_3_isr(void);
+void exti4_15_isr(void);
+void tsc_isr(void);
+void dma1_channel1_isr(void);
+void dma1_channel2_3_dma2_channel1_2_isr(void);
+void dma1_channel4_7_dma2_channel3_5_isr(void);
+void adc_comp_isr(void);
+void tim1_brk_up_trg_com_isr(void);
+void tim1_cc_isr(void);
+void tim2_isr(void);
+void tim3_isr(void);
+void tim6_dac_isr(void);
+void tim7_isr(void);
+void tim14_isr(void);
+void tim15_isr(void);
+void tim16_isr(void);
+void tim17_isr(void);
+void i2c1_isr(void);
+void i2c2_isr(void);
+void spi1_isr(void);
+void spi2_isr(void);
+void usart1_isr(void);
+void usart2_isr(void);
+void usart3_4_isr(void);
+void cec_can_isr(void);
+void usb_isr(void);
+void nmi_handler(void);
+void hard_fault_handler(void);
 
 /* 
  * end of file

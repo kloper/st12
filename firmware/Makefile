@@ -19,9 +19,13 @@ CFILES = \
  st12_config.c \
  st12_display.c \
  st12_rotary.c \
- main.c
+ st12_current.c \
+ st12_shake.c \
+ st12_term.c \
+ st12_menu.c \
+ st12_main.c
 
-OPT = -g -O0
+OPT = -g -O1
 
 DEVICE = stm32f030F4
 
